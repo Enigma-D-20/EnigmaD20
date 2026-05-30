@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Enigma D20 Pairing</title>
+    <style>
+        body { background: #111; color: #fff; text-align: center; font-family: sans-serif; padding: 50px; }
+        input { padding: 10px; width: 250px; border-radius: 5px; border: none; }
+        button { padding: 10px 20px; background: #25D366; border: none; color: white; cursor: pointer; border-radius: 5px; }
+        #code { font-size: 2.5em; margin-top: 20px; color: #00ff00; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Enigma D20 Pairing</h1>
+    <input type="text" id="num" placeholder="91XXXXXXXXXX">
+    <button onclick="getCode()">Get Code</button>
+    <div id="code">Waiting...</div>
+
+    <script>
+        async function getCode() {
+            const num = document.getElementById('num').value;
+            document.getElementById('code').innerText = "Generating...";
+            const res = await fetch('/pair?number=' + num);
+            const data = await res.json();
+            document.getElementById('code').innerText = data.code;
+        }
+    </script>
+</body>
+</html>
+

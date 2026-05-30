@@ -12,6 +12,7 @@
   "type": "commonjs",
   "dependencies": {
     "@whiskeysockets/baileys": "^7.0.0-rc13",
+    "express": "^5.2.1",
     "lyrics-finder": "^21.7.0",
     "pino": "^10.3.1",
     "play-dl": "^1.9.7",
