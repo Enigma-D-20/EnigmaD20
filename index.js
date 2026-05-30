@@ -1,245 +1,40 @@
-const { 
-    default: makeWASocket, 
-    useMultiFileAuthState, 
-    DisconnectReason, 
-    fetchLatestBaileysVersion 
-} = require('@whiskeysockets/baileys');
+const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys');
 const pino = require('pino');
-const readline = require('readline');
-const os = require('os'); 
+const os = require('os');
+const { handlePlay, handleLyrics } = require('./src/download');
+const { handleTtt, handleMove } = require('./src/game');
 
-// 🔥 NEW: Required Modules for Music & Lyrics
-const yts = require('yt-search');
-const ytdl = require('ytdl-core');
-const lyricsFinder = require('lyrics-finder');
-
-const BOT_CONFIG = {
-    name: "Enigma D20",
-    owner: "Abhrodeep Dey",
-    developer: "Rohan Sharma",
-    timezone: "Asia/Kolkata",
-    version: "1.0.5" // Music & Lyrics Update
-};
-
-const AUTHORIZED_NUMBERS = [
-    "918100601505",
-    "916290371061",
-    "918282853822",
-    "217128296820869" 
-];
-
-process.env.TZ = BOT_CONFIG.timezone;
-
-const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-const question = (text) => new Promise((resolve) => rl.question(text, resolve));
+const BOT_CONFIG = { name: "Enigma D20", owner: "Abhrodeep Dey", version: "1.1.1", botNumber: "91XXXXXXXXXX" };
+const AUTHORIZED_NUMBERS = ["918100601505", "916290371061", "918282853822", "217128296820869"];
 
 async function startBot() {
     const { state, saveCreds } = await useMultiFileAuthState('auth_info');
-    const { version } = await fetchLatestBaileysVersion();
-
-    const sock = makeWASocket({
-        version,
-        logger: pino({ level: 'silent' }),
-        printQRInTerminal: false,
-        auth: state,
-        browser: ["Ubuntu", "Chrome", "20.0.04"]
-    });
-
-    if (!sock.authState.creds.registered) {
-        console.log(`\n--- ${BOT_CONFIG.name} Authentication ---`);
-        const phoneNumber = await question('Enter your WhatsApp phone number with country code (e.g., 91XXXXXXXXXX): ');
-        const cleanedNumber = phoneNumber.replace(/[^0-9]/g, '');
-
-        if (!cleanedNumber) {
-            console.log('Invalid phone number. Restart the script.');
-            process.exit(1);
-        }
-
-        setTimeout(async () => {
-            try {
-                let code = await sock.requestPairingCode(cleanedNumber);
-                code = code?.match(/.{1,4}/g)?.join('-') || code;
-                console.log(`\n👉 Your Pairing Code: ${code}\n`);
-                console.log('Open WhatsApp -> Linked Devices -> Link with phone number instead, and enter this code.');
-            } catch (error) {
-                console.error('Failed to generate pairing code:', error);
-            }
-        }, 3000); 
-    }
+    const sock = makeWASocket({ version: (await fetchLatestBaileysVersion()).version, logger: pino({ level: 'silent' }), auth: state });
 
     sock.ev.on('creds.update', saveCreds);
-
-    sock.ev.on('connection.update', async (update) => {
-        const { connection, lastDisconnect } = update;
-        
-        if (connection === 'close') {
-            const shouldReconnect = lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut;
-            console.log(`Connection closed. Reconnecting: ${shouldReconnect}`);
-            if (shouldReconnect) {
-                startBot();
-            }
-        } else if (connection === 'open') {
-            console.log(`\n======================================`);
-            console.log(`🤖 Bot Name  : ${BOT_CONFIG.name}`);
-            console.log(`👑 Owner     : ${BOT_CONFIG.owner}`);
-            console.log(`💻 Developer : ${BOT_CONFIG.developer}`);
-            console.log(`🎵 Features  : Music & Lyrics Loaded`);
-            console.log(`======================================`);
-            console.log(`\n[STATUS] ${BOT_CONFIG.name} is online!`);
-        }
-    });
-
     sock.ev.on('messages.upsert', async (chatUpdate) => {
-        try {
-            const msg = chatUpdate.messages[0];
-            
-            if (!msg.message) return; 
+        const msg = chatUpdate.messages[0];
+        if (!msg.message) return;
+        const from = msg.key.remoteJid;
+        const isFromMe = msg.key.fromMe;
+        const senderNum = (isFromMe ? sock.user.id : (msg.key.participant || msg.key.remoteJid)).split('@')[0].split(':')[0];
+        const body = msg.message.conversation || msg.message.extendedTextMessage?.text || '';
 
-            const isFromMe = msg.key.fromMe;
-            const from = msg.key.remoteJid;
-            
-            let rawSender = isFromMe ? sock.user.id : (msg.key.participant || msg.key.remoteJid);
-            let senderNum = rawSender.split('@')[0].split(':')[0]; 
+        if (!body.startsWith('.')) return;
+        if (!isFromMe && !AUTHORIZED_NUMBERS.includes(senderNum)) return;
 
-            let body = '';
-            if (msg.message.conversation) {
-                body = msg.message.conversation;
-            } else if (msg.message.extendedTextMessage) {
-                body = msg.message.extendedTextMessage.text;
-            } else if (msg.message.imageMessage) {
-                body = msg.message.imageMessage.caption || '';
-            } else if (msg.message.videoMessage) {
-                body = msg.message.videoMessage.caption || '';
-            }
+        const args = body.slice(1).trim().split(/ +/);
+        const command = args.shift().toLowerCase();
 
-            const prefix = '.';
-            if (!body.startsWith(prefix)) return;
-
-            if (!isFromMe && !AUTHORIZED_NUMBERS.includes(senderNum)) {
-                return; 
-            }
-
-            const args = body.slice(prefix.length).trim().split(/ +/);
-            const command = args.shift().toLowerCase();
-
-            // ------------------------------------
-            //           BOT COMMANDS
-            // ------------------------------------
-
-            if (command === 'menu') {
-                const totalRam = (os.totalmem() / 1024 / 1024 / 1024).toFixed(2); 
-                const freeRam = (os.freemem() / 1024 / 1024 / 1024).toFixed(2); 
-                const usedRam = (totalRam - freeRam).toFixed(2);
-                const now = new Date();
-                const currentDate = now.toLocaleDateString('en-IN', { timeZone: BOT_CONFIG.timezone });
-                const currentTime = now.toLocaleTimeString('en-IN', { timeZone: BOT_CONFIG.timezone });
-                const timestamp = msg.messageTimestamp.low || msg.messageTimestamp;
-                const botSpeed = Math.abs(Date.now() - (timestamp * 1000)); 
-
-                const menuText = `
-╭━━━〔 *${BOT_CONFIG.name}* 〕━━━
-┃ 👑 *Owner:* ${BOT_CONFIG.owner}
-┃ 💻 *Developer:* ${BOT_CONFIG.developer}
-┃ 🏷️ *Version:* ${BOT_CONFIG.version}
-╰━━━━━━━━━━━━━━━━━━━━━
-
-╭━━━〔 *📊 SYSTEM INFO* 〕━━━
-┃ 📅 *Date:* ${currentDate}
-┃ ⏰ *Time:* ${currentTime}
-┃ 🖥️ *RAM Used:* ${usedRam} GB / ${totalRam} GB
-┃ ⚡ *Bot Ping:* ${botSpeed} ms
-╰━━━━━━━━━━━━━━━━━━━━━
-
-╭━━━〔 *📜 COMMAND MENU* 〕━━━
-┃ ⚡ *${prefix}menu* - Show this menu
-┃ ℹ️ *${prefix}info* - Check bot status
-┃ 🏓 *${prefix}ping* - Check bot speed
-┃ 👤 *${prefix}owner* - Owner details
-┃ 🎵 *${prefix}play* - Download any song
-┃ 📝 *${prefix}lyrics* - Get song lyrics
-╰━━━━━━━━━━━━━━━━━━━━━
-`.trim();
-                
-                await sock.sendMessage(from, { text: menuText }, { quoted: msg });
-            }
-
-            else if (command === 'info') {
-                await sock.sendMessage(from, { text: `*System is fully operational and secured.*` }, { quoted: msg });
-            }
-
-            else if (command === 'ping') {
-                const timestamp = msg.messageTimestamp.low || msg.messageTimestamp;
-                const speed = Math.abs(Date.now() - (timestamp * 1000));
-                await sock.sendMessage(from, { text: `*Pong! 🏓*\nBot Speed: ${speed} ms` }, { quoted: msg });
-            }
-
-            else if (command === 'owner') {
-                await sock.sendMessage(from, { text: `*👑 Owner:* ${BOT_CONFIG.owner}\n*💻 Developer:* ${BOT_CONFIG.developer}` }, { quoted: msg });
-            }
-
-            // 🔥 NEW COMMAND: Song Downloader
-            else if (command === 'play') {
-                const songQuery = args.join(" ");
-                if (!songQuery) {
-                    return sock.sendMessage(from, { text: `*⚠️ Gaane ka naam likho!*\nExample: ${prefix}play raabta` }, { quoted: msg });
-                }
-
-                await sock.sendMessage(from, { text: `🎵 *${songQuery}* search kar raha hu... Wait karo.` }, { quoted: msg });
-
-                try {
-                    const search = await yts(songQuery);
-                    const video = search.videos[0]; // Gets the top result
-                    
-                    if (!video) {
-                        return sock.sendMessage(from, { text: "❌ Koi gaana nahi mila." }, { quoted: msg });
-                    }
-                    
-                    const infoText = `╭━━━〔 *🎵 SONG FOUND* 〕━━━\n┃ *Title:* ${video.title}\n┃ *Channel:* ${video.author.name}\n┃ *Duration:* ${video.timestamp}\n╰━━━━━━━━━━━━━━━━━━━━━\n\n⬇️ *Downloading audio...*`;
-                    
-                    // Send thumbnail with details
-                    await sock.sendMessage(from, { image: { url: video.thumbnail }, caption: infoText }, { quoted: msg });
-                    
-                    // Download and send the actual audio file
-                    const stream = ytdl(video.url, { filter: 'audioonly', quality: 'highestaudio' });
-                    await sock.sendMessage(from, { 
-                        audio: { stream: stream }, 
-                        mimetype: 'audio/mp4',
-                        ptt: false // Sends as an audio file, not a voice note
-                    }, { quoted: msg });
-                    
-                } catch (err) {
-                    console.error(err);
-                    await sock.sendMessage(from, { text: "❌ Download fail ho gaya. Server overload ho sakta hai." }, { quoted: msg });
-                }
-            }
-
-            // 🔥 NEW COMMAND: Lyrics Finder
-            else if (command === 'lyrics') {
-                const songQuery = args.join(" ");
-                if (!songQuery) {
-                    return sock.sendMessage(from, { text: `*⚠️ Gaane ka naam likho!*\nExample: ${prefix}lyrics darshana` }, { quoted: msg });
-                }
-
-                await sock.sendMessage(from, { text: `🔍 *${songQuery}* ke lyrics dhoondh raha hu...` }, { quoted: msg });
-
-                try {
-                    const lyrics = await lyricsFinder("", songQuery);
-                    
-                    if (!lyrics) {
-                        return sock.sendMessage(from, { text: "❌ Sorry bhai, is gaane ke lyrics nahi mile!" }, { quoted: msg });
-                    }
-
-                    await sock.sendMessage(from, { text: `*📝 Lyrics: ${songQuery}*\n\n${lyrics}` }, { quoted: msg });
-                } catch (err) {
-                    await sock.sendMessage(from, { text: "❌ Error fetching lyrics." }, { quoted: msg });
-                }
-            }
-
-        } catch (err) {
-            console.error("Error handling message: ", err);
+        if (command === 'menu') {
+            const menu = `╭━━━〔 *${BOT_CONFIG.name}* 〕━━━\n┃ 🎵 *.play* - Download song\n┃ 📝 *.lyrics* - Get lyrics\n┃ 🎮 *.ttt* - Tic-Tac-Toe\n┃ 🕹️ *.move* - Game move\n╰━━━━━━━━━━━━━`;
+            await sock.sendMessage(from, { text: menu });
         }
+        else if (command === 'play') await handlePlay(sock, from, msg, args);
+        else if (command === 'lyrics') await handleLyrics(sock, from, msg, args);
+        else if (command === 'ttt') await handleTtt(sock, from, msg, args, senderNum);
+        else if (command === 'move') await handleMove(sock, from, msg, args, senderNum);
     });
 }
-
 startBot();
 

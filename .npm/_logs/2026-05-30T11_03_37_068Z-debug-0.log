@@ -1,0 +1,324 @@
+0 verbose cli /data/data/com.termux/files/usr/bin/node /data/data/com.termux/files/usr/bin/npm
+1 info using npm@11.16.0
+2 info using node@v26.2.0
+3 silly config load:file:/data/data/com.termux/files/usr/lib/node_modules/npm/npmrc
+4 silly config load:file:/data/data/com.termux/files/home/.npmrc
+5 silly config load:file:/data/data/com.termux/files/usr/etc/npmrc
+6 verbose title npm install @distube/ytdl-core
+7 verbose argv "install" "@distube/ytdl-core"
+8 verbose logfile logs-max:10 dir:/data/data/com.termux/files/home/.npm/_logs/2026-05-30T11_03_37_068Z-
+9 verbose logfile /data/data/com.termux/files/home/.npm/_logs/2026-05-30T11_03_37_068Z-debug-0.log
+10 silly logfile done cleaning log files
+11 silly packumentCache heap:1082130432 maxSize:270532608 maxEntrySize:135266304
+12 silly idealTree buildDeps
+13 silly fetch manifest @distube/ytdl-core@*
+14 silly packumentCache full:https://registry.npmjs.org/@distube%2fytdl-core cache-miss
+15 http fetch GET 200 https://registry.npmjs.org/@distube%2fytdl-core 1404ms (cache miss)
+16 silly packumentCache full:https://registry.npmjs.org/@distube%2fytdl-core set size:undefined disposed:false
+17 silly placeDep ROOT @distube/ytdl-core@4.16.12 OK for: home@1.0.0 want: *
+18 silly fetch manifest tough-cookie@^5.1.2
+19 silly packumentCache full:https://registry.npmjs.org/tough-cookie cache-miss
+20 silly fetch manifest http-cookie-agent@^7.0.1
+21 silly packumentCache full:https://registry.npmjs.org/http-cookie-agent cache-miss
+22 silly fetch manifest https-proxy-agent@^7.0.6
+23 silly packumentCache full:https://registry.npmjs.org/https-proxy-agent cache-miss
+24 http fetch GET 200 https://registry.npmjs.org/https-proxy-agent 204ms (cache miss)
+25 silly packumentCache full:https://registry.npmjs.org/https-proxy-agent set size:undefined disposed:false
+26 http fetch GET 200 https://registry.npmjs.org/tough-cookie 576ms (cache miss)
+27 silly packumentCache full:https://registry.npmjs.org/tough-cookie set size:undefined disposed:false
+28 http fetch GET 200 https://registry.npmjs.org/http-cookie-agent 607ms (cache miss)
+29 silly packumentCache full:https://registry.npmjs.org/http-cookie-agent set size:undefined disposed:false
+30 silly fetch manifest undici@^7.8.0
+31 silly packumentCache full:https://registry.npmjs.org/undici cache-miss
+32 http fetch GET 200 https://registry.npmjs.org/undici 117ms (cache revalidated)
+33 silly packumentCache full:https://registry.npmjs.org/undici set size:1396737 disposed:false
+34 silly placeDep ROOT http-cookie-agent@7.0.4 OK for: @distube/ytdl-core@4.16.12 want: ^7.0.1
+35 silly placeDep ROOT tough-cookie@5.1.2 OK for: http-cookie-agent@7.0.4 want: ^4.0.0 || ^5.0.0 || ^6.0.0
+36 silly placeDep ROOT https-proxy-agent@7.0.6 OK for: @distube/ytdl-core@4.16.12 want: ^7.0.6
+37 silly fetch manifest agent-base@^9.0.0
+38 silly packumentCache full:https://registry.npmjs.org/agent-base cache-miss
+39 silly fetch manifest tldts@^6.1.32
+40 silly packumentCache full:https://registry.npmjs.org/tldts cache-miss
+41 silly fetch manifest agent-base@^7.1.2
+42 silly packumentCache full:https://registry.npmjs.org/agent-base cache-miss
+43 http fetch GET 200 https://registry.npmjs.org/agent-base 89ms (cache miss)
+44 silly packumentCache full:https://registry.npmjs.org/agent-base set size:undefined disposed:false
+45 http fetch GET 200 https://registry.npmjs.org/agent-base 420ms (cache miss)
+46 silly packumentCache full:https://registry.npmjs.org/agent-base set size:undefined disposed:false
+47 http fetch GET 200 https://registry.npmjs.org/tldts 574ms (cache miss)
+48 silly packumentCache full:https://registry.npmjs.org/tldts set size:undefined disposed:false
+49 silly placeDep ROOT agent-base@9.0.0 OK for: http-cookie-agent@7.0.4 want: ^9.0.0
+50 silly placeDep node_modules/https-proxy-agent agent-base@7.1.4 OK for: https-proxy-agent@7.0.6 want: ^7.1.2
+51 silly placeDep ROOT tldts@6.1.86 OK for: tough-cookie@5.1.2 want: ^6.1.32
+52 silly fetch manifest tldts-core@^6.1.86
+53 silly packumentCache full:https://registry.npmjs.org/tldts-core cache-miss
+54 http fetch GET 200 https://registry.npmjs.org/tldts-core 524ms (cache miss)
+55 silly packumentCache full:https://registry.npmjs.org/tldts-core set size:undefined disposed:false
+56 silly placeDep ROOT tldts-core@6.1.86 OK for: tldts@6.1.86 want: ^6.1.86
+57 silly reify moves {}
+58 silly audit bulk request {
+58 silly audit   '@borewit/text-codec': [ '0.2.2' ],
+58 silly audit   '@cacheable/memory': [ '2.0.9' ],
+58 silly audit   '@cacheable/node-cache': [ '1.7.6' ],
+58 silly audit   '@cacheable/utils': [ '2.4.1' ],
+58 silly audit   '@emnapi/runtime': [ '1.10.0' ],
+58 silly audit   '@hapi/boom': [ '9.1.4' ],
+58 silly audit   '@hapi/hoek': [ '9.3.0' ],
+58 silly audit   '@img/colour': [ '1.1.0' ],
+58 silly audit   '@img/sharp-darwin-arm64': [ '0.34.5' ],
+58 silly audit   '@img/sharp-darwin-x64': [ '0.34.5' ],
+58 silly audit   '@img/sharp-libvips-darwin-arm64': [ '1.2.4' ],
+58 silly audit   '@img/sharp-libvips-darwin-x64': [ '1.2.4' ],
+58 silly audit   '@img/sharp-libvips-linux-arm': [ '1.2.4' ],
+58 silly audit   '@img/sharp-libvips-linux-arm64': [ '1.2.4' ],
+58 silly audit   '@img/sharp-libvips-linux-ppc64': [ '1.2.4' ],
+58 silly audit   '@img/sharp-libvips-linux-riscv64': [ '1.2.4' ],
+58 silly audit   '@img/sharp-libvips-linux-s390x': [ '1.2.4' ],
+58 silly audit   '@img/sharp-libvips-linux-x64': [ '1.2.4' ],
+58 silly audit   '@img/sharp-libvips-linuxmusl-arm64': [ '1.2.4' ],
+58 silly audit   '@img/sharp-libvips-linuxmusl-x64': [ '1.2.4' ],
+58 silly audit   '@img/sharp-linux-arm': [ '0.34.5' ],
+58 silly audit   '@img/sharp-linux-arm64': [ '0.34.5' ],
+58 silly audit   '@img/sharp-linux-ppc64': [ '0.34.5' ],
+58 silly audit   '@img/sharp-linux-riscv64': [ '0.34.5' ],
+58 silly audit   '@img/sharp-linux-s390x': [ '0.34.5' ],
+58 silly audit   '@img/sharp-linux-x64': [ '0.34.5' ],
+58 silly audit   '@img/sharp-linuxmusl-arm64': [ '0.34.5' ],
+58 silly audit   '@img/sharp-linuxmusl-x64': [ '0.34.5' ],
+58 silly audit   '@img/sharp-wasm32': [ '0.34.5' ],
+58 silly audit   '@img/sharp-win32-arm64': [ '0.34.5' ],
+58 silly audit   '@img/sharp-win32-ia32': [ '0.34.5' ],
+58 silly audit   '@img/sharp-win32-x64': [ '0.34.5' ],
+58 silly audit   '@jsep-plugin/assignment': [ '1.3.0' ],
+58 silly audit   '@jsep-plugin/regex': [ '1.0.4' ],
+58 silly audit   '@keyv/bigmap': [ '1.3.1' ],
+58 silly audit   '@keyv/serialize': [ '1.1.1' ],
+58 silly audit   '@pinojs/redact': [ '0.4.0' ],
+58 silly audit   '@protobufjs/aspromise': [ '1.1.2' ],
+58 silly audit   '@protobufjs/base64': [ '1.1.2' ],
+58 silly audit   '@protobufjs/codegen': [ '2.0.5' ],
+58 silly audit   '@protobufjs/eventemitter': [ '1.1.1' ],
+58 silly audit   '@protobufjs/fetch': [ '1.1.1' ],
+58 silly audit   '@protobufjs/float': [ '1.0.2' ],
+58 silly audit   '@protobufjs/inquire': [ '1.1.2' ],
+58 silly audit   '@protobufjs/path': [ '1.1.2' ],
+58 silly audit   '@protobufjs/pool': [ '1.1.0' ],
+58 silly audit   '@protobufjs/utf8': [ '1.1.1' ],
+58 silly audit   '@tokenizer/inflate': [ '0.4.1' ],
+58 silly audit   '@tokenizer/token': [ '0.3.0' ],
+58 silly audit   '@types/node': [ '25.9.1' ],
+58 silly audit   '@whiskeysockets/baileys': [ '7.0.0-rc13' ],
+58 silly audit   pino: [ '9.14.0', '10.3.1' ],
+58 silly audit   'pino-abstract-transport': [ '2.0.0', '3.0.0' ],
+58 silly audit   'thread-stream': [ '3.1.0', '4.2.0' ],
+58 silly audit   'ansi-regex': [ '3.0.1' ],
+58 silly audit   'async-mutex': [ '0.5.0' ],
+58 silly audit   'async.parallellimit': [ '0.5.2' ],
+58 silly audit   'async.util.eachoflimit': [ '0.5.2' ],
+58 silly audit   'async.util.isarray': [ '0.5.2' ],
+58 silly audit   'async.util.isarraylike': [ '0.5.2' ],
+58 silly audit   'async.util.keyiterator': [ '0.5.2' ],
+58 silly audit   'async.util.keys': [ '0.5.2' ],
+58 silly audit   'async.util.noop': [ '0.5.2' ],
+58 silly audit   'async.util.once': [ '0.5.2' ],
+58 silly audit   'async.util.onlyonce': [ '0.5.2' ],
+58 silly audit   'async.util.parallel': [ '0.5.2' ],
+58 silly audit   'async.util.restparam': [ '0.5.2' ],
+58 silly audit   'atomic-sleep': [ '1.0.0' ],
+58 silly audit   'balanced-match': [ '1.0.2' ],
+58 silly audit   boolbase: [ '1.0.0' ],
+58 silly audit   boolstring: [ '2.0.1' ],
+58 silly audit   'brace-expansion': [ '1.1.15' ],
+58 silly audit   cacheable: [ '2.3.5' ],
+58 silly audit   cheerio: [ '1.2.0' ],
+58 silly audit   'cheerio-select': [ '2.1.0' ],
+58 silly audit   'dom-serializer': [ '2.0.0', '0.2.2' ],
+58 silly audit   domelementtype: [ '2.3.0', '1.3.1' ],
+58 silly audit   domhandler: [ '5.0.3', '2.4.2' ],
+58 silly audit   domutils: [ '3.2.2', '1.7.0' ],
+58 silly audit   entities: [ '4.5.0', '7.0.1', '2.2.0', '1.1.2', '6.0.1' ],
+58 silly audit   htmlparser2: [ '10.1.0', '3.10.1' ],
+58 silly audit   'concat-map': [ '0.0.1' ],
+58 silly audit   'content-type': [ '1.0.5' ],
+58 silly audit   'css-select': [ '5.2.2' ],
+58 silly audit   'css-what': [ '6.2.2' ],
+58 silly audit   'curve25519-js': [ '0.0.4' ],
+58 silly audit   dasu: [ '0.4.3' ],
+58 silly audit   debug: [ '4.4.3' ],
+58 silly audit   'detect-libc': [ '2.1.2' ],
+58 silly audit   encoding: [ '0.1.13' ],
+58 silly audit   'encoding-sniffer': [ '0.2.1' ],
+58 silly audit   eventemitter3: [ '5.0.4' ],
+58 silly audit   'file-type': [ '21.3.4' ],
+58 silly audit   hashery: [ '1.5.1' ],
+58 silly audit   he: [ '1.2.0' ],
+58 silly audit   hookified: [ '1.15.1', '2.2.0' ],
+58 silly audit   'html-to-text': [ '5.1.1' ],
+58 silly audit   'human-time': [ '0.0.2' ],
+58 silly audit   'iconv-lite': [ '0.6.3' ],
+58 silly audit   ieee754: [ '1.2.1' ],
+58 silly audit   inherits: [ '2.0.4' ],
+58 silly audit   'is-fullwidth-code-point': [ '2.0.0' ],
+58 silly audit   jsep: [ '1.4.0' ],
+58 silly audit   'jsonpath-plus': [ '10.3.0' ],
+58 silly audit   keypress: [ '0.2.1' ],
+58 silly audit   keyv: [ '5.6.0' ],
+58 silly audit   libsignal: [ '6.0.0' ],
+58 silly audit   lodash: [ '4.18.1' ],
+58 silly audit   long: [ '5.3.2' ],
+58 silly audit   'lru-cache': [ '11.5.1' ],
+58 silly audit   'lyrics-finder': [ '21.7.0' ],
+58 silly audit   m3u8stream: [ '0.8.6' ],
+58 silly audit   'media-typer': [ '1.1.0' ],
+58 silly audit   'mimic-fn': [ '2.1.0' ],
+58 silly audit   miniget: [ '4.2.3' ],
+58 silly audit   minimatch: [ '3.0.8' ],
+58 silly audit   minimist: [ '1.2.8' ],
+58 silly audit   ms: [ '2.1.3' ],
+58 silly audit   'music-metadata': [ '11.12.3' ],
+58 silly audit   'node-fetch': [ '2.7.0' ],
+58 silly audit   'node-fzf': [ '0.14.0' ],
+58 silly audit   'nth-check': [ '2.1.1' ],
+58 silly audit   'on-exit-leak-free': [ '2.1.2' ],
+58 silly audit   onetime: [ '5.1.2' ],
+58 silly audit   'p-queue': [ '9.3.0' ],
+58 silly audit   'p-timeout': [ '7.0.1' ],
+58 silly audit   parse5: [ '7.3.0' ],
+58 silly audit   'parse5-htmlparser2-tree-adapter': [ '7.1.0' ],
+58 silly audit   'parse5-parser-stream': [ '7.1.2' ],
+58 silly audit   picocolors: [ '1.1.1' ],
+58 silly audit   'pino-std-serializers': [ '7.1.0' ],
+58 silly audit   'process-warning': [ '5.0.0' ],
+58 silly audit   protobufjs: [ '7.6.1' ],
+58 silly audit   qified: [ '0.10.1' ],
+58 silly audit   'quick-format-unescaped': [ '4.0.4' ],
+58 silly audit   'readable-stream': [ '3.6.2' ],
+58 silly audit   'real-require': [ '0.2.0', '1.0.0' ],
+58 silly audit   redstar: [ '0.0.2' ],
+58 silly audit   'restore-cursor': [ '3.1.0' ],
+58 silly audit   'safe-buffer': [ '5.2.1' ],
+58 silly audit   'safe-stable-stringify': [ '2.5.0' ],
+58 silly audit   'safer-buffer': [ '2.1.2' ],
+58 silly audit   sax: [ '1.6.0' ],
+58 silly audit   semver: [ '7.8.1' ],
+58 silly audit   sharp: [ '0.34.5' ],
+58 silly audit   'signal-exit': [ '3.0.7' ],
+58 silly audit   'sonic-boom': [ '4.2.1' ],
+58 silly audit   split2: [ '4.2.0' ],
+58 silly audit   string_decoder: [ '1.3.0' ],
+58 silly audit   'string-width': [ '2.1.1' ],
+58 silly audit   'strip-ansi': [ '4.0.0' ],
+58 silly audit   strtok3: [ '10.3.5' ],
+58 silly audit   'token-types': [ '6.1.2' ],
+58 silly audit   tr46: [ '0.0.3' ],
+58 silly audit   tslib: [ '2.8.1' ],
+58 silly audit   ttys: [ '0.0.3' ],
+58 silly audit   'uint8array-extras': [ '1.5.0' ],
+58 silly audit   undici: [ '7.26.0' ],
+58 silly audit   'undici-types': [ '7.24.6' ],
+58 silly audit   'util-deprecate': [ '1.0.2' ],
+58 silly audit   'webidl-conversions': [ '3.0.1' ],
+58 silly audit   'whatsapp-rust-bridge': [ '0.5.4' ],
+58 silly audit   'whatwg-encoding': [ '3.1.1' ],
+58 silly audit   'whatwg-mimetype': [ '4.0.0' ],
+58 silly audit   'whatwg-url': [ '5.0.0' ],
+58 silly audit   'win-guid': [ '0.2.1' ],
+58 silly audit   ws: [ '8.21.0' ],
+58 silly audit   'yt-search': [ '2.13.1' ],
+58 silly audit   'ytdl-core': [ '4.11.5' ],
+58 silly audit   '@distube/ytdl-core': [ '4.16.12' ],
+58 silly audit   'http-cookie-agent': [ '7.0.4' ],
+58 silly audit   'tough-cookie': [ '5.1.2' ],
+58 silly audit   'https-proxy-agent': [ '7.0.6' ],
+58 silly audit   'agent-base': [ '9.0.0', '7.1.4' ],
+58 silly audit   tldts: [ '6.1.86' ],
+58 silly audit   'tldts-core': [ '6.1.86' ]
+58 silly audit }
+59 http cache tldts@https://registry.npmjs.org/tldts/-/tldts-6.1.86.tgz 0ms (cache hit)
+60 http cache agent-base@https://registry.npmjs.org/agent-base/-/agent-base-9.0.0.tgz 0ms (cache hit)
+61 http cache tldts-core@https://registry.npmjs.org/tldts-core/-/tldts-core-6.1.86.tgz 0ms (cache hit)
+62 http cache https-proxy-agent@https://registry.npmjs.org/https-proxy-agent/-/https-proxy-agent-7.0.6.tgz 0ms (cache hit)
+63 http cache tough-cookie@https://registry.npmjs.org/tough-cookie/-/tough-cookie-5.1.2.tgz 1ms (cache hit)
+64 http cache @distube/ytdl-core@https://registry.npmjs.org/@distube/ytdl-core/-/ytdl-core-4.16.12.tgz 0ms (cache hit)
+65 http cache agent-base@https://registry.npmjs.org/agent-base/-/agent-base-7.1.4.tgz 0ms (cache hit)
+66 http cache http-cookie-agent@https://registry.npmjs.org/http-cookie-agent/-/http-cookie-agent-7.0.4.tgz 0ms (cache hit)
+67 silly tarball no local data for tldts@https://registry.npmjs.org/tldts/-/tldts-6.1.86.tgz. Extracting by manifest.
+68 silly tarball no local data for agent-base@https://registry.npmjs.org/agent-base/-/agent-base-9.0.0.tgz. Extracting by manifest.
+69 silly tarball no local data for tldts-core@https://registry.npmjs.org/tldts-core/-/tldts-core-6.1.86.tgz. Extracting by manifest.
+70 silly tarball no local data for https-proxy-agent@https://registry.npmjs.org/https-proxy-agent/-/https-proxy-agent-7.0.6.tgz. Extracting by manifest.
+71 silly tarball no local data for tough-cookie@https://registry.npmjs.org/tough-cookie/-/tough-cookie-5.1.2.tgz. Extracting by manifest.
+72 silly tarball no local data for @distube/ytdl-core@https://registry.npmjs.org/@distube/ytdl-core/-/ytdl-core-4.16.12.tgz. Extracting by manifest.
+73 silly tarball no local data for agent-base@https://registry.npmjs.org/agent-base/-/agent-base-7.1.4.tgz. Extracting by manifest.
+74 silly tarball no local data for http-cookie-agent@https://registry.npmjs.org/http-cookie-agent/-/http-cookie-agent-7.0.4.tgz. Extracting by manifest.
+75 http fetch GET 200 https://registry.npmjs.org/agent-base/-/agent-base-9.0.0.tgz 339ms (cache miss)
+76 http fetch GET 200 https://registry.npmjs.org/https-proxy-agent/-/https-proxy-agent-7.0.6.tgz 373ms (cache miss)
+77 http fetch POST 200 https://registry.npmjs.org/-/npm/v1/security/advisories/bulk 544ms
+78 silly audit report {
+78 silly audit report   minimatch: [
+78 silly audit report     {
+78 silly audit report       id: 1113459,
+78 silly audit report       url: 'https://github.com/advisories/GHSA-3ppc-4f35-3m26',
+78 silly audit report       title: 'minimatch has a ReDoS via repeated wildcards with non-matching literal in pattern',
+78 silly audit report       severity: 'high',
+78 silly audit report       vulnerable_versions: '<3.1.3',
+78 silly audit report       cwe: [Array],
+78 silly audit report       cvss: [Object]
+78 silly audit report     },
+78 silly audit report     {
+78 silly audit report       id: 1113538,
+78 silly audit report       url: 'https://github.com/advisories/GHSA-7r86-cg39-jmmj',
+78 silly audit report       title: 'minimatch has ReDoS: matchOne() combinatorial backtracking via multiple non-adjacent GLOBSTAR segments',
+78 silly audit report       severity: 'high',
+78 silly audit report       vulnerable_versions: '<3.1.3',
+78 silly audit report       cwe: [Array],
+78 silly audit report       cvss: [Object]
+78 silly audit report     },
+78 silly audit report     {
+78 silly audit report       id: 1113546,
+78 silly audit report       url: 'https://github.com/advisories/GHSA-23c5-xmqv-rm74',
+78 silly audit report       title: 'minimatch ReDoS: nested *() extglobs generate catastrophically backtracking regular expressions',
+78 silly audit report       severity: 'high',
+78 silly audit report       vulnerable_versions: '<3.1.4',
+78 silly audit report       cwe: [Array],
+78 silly audit report       cvss: [Object]
+78 silly audit report     }
+78 silly audit report   ]
+78 silly audit report }
+79 silly packumentCache corgi:https://registry.npmjs.org/minimatch cache-miss
+80 http fetch GET 200 https://registry.npmjs.org/agent-base/-/agent-base-7.1.4.tgz 544ms (cache miss)
+81 http fetch GET 200 https://registry.npmjs.org/minimatch 116ms (cache revalidated)
+82 silly packumentCache corgi:https://registry.npmjs.org/minimatch set size:168441 disposed:false
+83 silly packumentCache corgi:https://registry.npmjs.org/redstar cache-miss
+84 http fetch GET 200 https://registry.npmjs.org/http-cookie-agent/-/http-cookie-agent-7.0.4.tgz 739ms (cache miss)
+85 http fetch GET 200 https://registry.npmjs.org/tough-cookie/-/tough-cookie-5.1.2.tgz 826ms (cache miss)
+86 http fetch GET 200 https://registry.npmjs.org/@distube/ytdl-core/-/ytdl-core-4.16.12.tgz 866ms (cache miss)
+87 http fetch GET 200 https://registry.npmjs.org/tldts/-/tldts-6.1.86.tgz 912ms (cache miss)
+88 http fetch GET 200 https://registry.npmjs.org/redstar 339ms (cache revalidated)
+89 silly packumentCache corgi:https://registry.npmjs.org/redstar set size:1262 disposed:false
+90 silly packumentCache corgi:https://registry.npmjs.org/node-fzf cache-miss
+91 http fetch GET 200 https://registry.npmjs.org/tldts-core/-/tldts-core-6.1.86.tgz 978ms (cache miss)
+92 http fetch GET 200 https://registry.npmjs.org/node-fzf 578ms (cache revalidated)
+93 silly packumentCache corgi:https://registry.npmjs.org/node-fzf set size:42290 disposed:false
+94 silly packumentCache corgi:https://registry.npmjs.org/yt-search cache-miss
+95 http fetch GET 200 https://registry.npmjs.org/yt-search 410ms (cache revalidated)
+96 silly packumentCache corgi:https://registry.npmjs.org/yt-search set size:126336 disposed:false
+97 silly ADD node_modules/tldts-core
+98 silly ADD node_modules/tldts
+99 silly ADD node_modules/agent-base
+100 silly ADD node_modules/https-proxy-agent
+101 silly ADD node_modules/https-proxy-agent/node_modules/agent-base
+102 silly ADD node_modules/tough-cookie
+103 silly ADD node_modules/http-cookie-agent
+104 silly ADD node_modules/@distube/ytdl-core
+105 warn allow-scripts 3 packages have install scripts not yet covered by allowScripts:
+105 warn allow-scripts   @whiskeysockets/baileys@7.0.0-rc13 (install: (install scripts present))
+105 warn allow-scripts   protobufjs@7.6.1 (install: (install scripts present))
+105 warn allow-scripts   sharp@0.34.5 (install: (install scripts present))
+105 warn allow-scripts
+105 warn allow-scripts Run `npm approve-scripts --allow-scripts-pending` to review, or `npm approve-scripts <pkg>` to allow.
+106 verbose cwd /data/data/com.termux/files/home
+107 verbose os Linux 4.14.186-g629cb8c46-dirty
+108 verbose node v26.2.0
+109 verbose npm  v11.16.0
+110 verbose exit 0
+111 info ok

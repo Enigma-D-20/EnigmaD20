@@ -1,0 +1,76 @@
+0 verbose cli /data/data/com.termux/files/usr/bin/node /data/data/com.termux/files/usr/bin/npm
+1 info using npm@11.16.0
+2 info using node@v26.2.0
+3 silly config load:file:/data/data/com.termux/files/usr/lib/node_modules/npm/npmrc
+4 silly config load:file:/data/data/com.termux/files/home/.npmrc
+5 silly config load:file:/data/data/com.termux/files/usr/etc/npmrc
+6 verbose title npm approve-scripts
+7 verbose argv "approve-scripts"
+8 verbose logfile logs-max:10 dir:/data/data/com.termux/files/home/.npm/_logs/2026-05-30T09_05_29_856Z-
+9 verbose logfile /data/data/com.termux/files/home/.npm/_logs/2026-05-30T09_05_29_856Z-debug-0.log
+10 silly logfile done cleaning log files
+11 verbose stack Error: 
+11 verbose stack Approve install scripts for specific dependencies
+11 verbose stack
+11 verbose stack Usage:
+11 verbose stack npm approve-scripts <pkg> [<pkg> ...]
+11 verbose stack npm approve-scripts --all
+11 verbose stack npm approve-scripts --allow-scripts-pending
+11 verbose stack
+11 verbose stack Options:
+11 verbose stack [-a|--all] [--allow-scripts-pending] [--no-allow-scripts-pin] [--json]
+11 verbose stack
+11 verbose stack   -a|--all
+11 verbose stack     When running `npm outdated` and `npm ls`, setting `--all` will show
+11 verbose stack
+11 verbose stack   --allow-scripts-pending
+11 verbose stack     List packages with install scripts that are not yet covered by the
+11 verbose stack
+11 verbose stack   --allow-scripts-pin
+11 verbose stack     Write pinned (`pkg@version`) entries when approving install scripts.
+11 verbose stack
+11 verbose stack   --json
+11 verbose stack     Whether or not to output JSON data, rather than the normal output.
+11 verbose stack
+11 verbose stack
+11 verbose stack Run "npm help approve-scripts" for more info
+11 verbose stack     at ApproveScripts.usageError (/data/data/com.termux/files/usr/lib/node_modules/npm/lib/base-cmd.js:177:26)
+11 verbose stack     at ApproveScripts.exec (/data/data/com.termux/files/usr/lib/node_modules/npm/lib/utils/allow-scripts-cmd.js:50:18)
+11 verbose stack     at /data/data/com.termux/files/usr/lib/node_modules/npm/lib/npm.js:308:81
+11 verbose stack     at Object.start (/data/data/com.termux/files/usr/lib/node_modules/npm/node_modules/proc-log/lib/index.js:101:21)
+11 verbose stack     at Npm.execCommandClass (/data/data/com.termux/files/usr/lib/node_modules/npm/lib/npm.js:307:19)
+11 verbose stack     at async Npm.exec (/data/data/com.termux/files/usr/lib/node_modules/npm/lib/npm.js:193:9)
+11 verbose stack     at async module.exports (/data/data/com.termux/files/usr/lib/node_modules/npm/lib/cli/entry.js:67:5)
+12 error code EUSAGE
+13 error
+13 error Approve install scripts for specific dependencies
+13 error
+13 error Usage:
+13 error npm approve-scripts <pkg> [<pkg> ...]
+13 error npm approve-scripts --all
+13 error npm approve-scripts --allow-scripts-pending
+13 error
+13 error Options:
+13 error [-a|--all] [--allow-scripts-pending] [--no-allow-scripts-pin] [--json]
+13 error
+13 error   -a|--all
+13 error     When running `npm outdated` and `npm ls`, setting `--all` will show
+13 error
+13 error   --allow-scripts-pending
+13 error     List packages with install scripts that are not yet covered by the
+13 error
+13 error   --allow-scripts-pin
+13 error     Write pinned (`pkg@version`) entries when approving install scripts.
+13 error
+13 error   --json
+13 error     Whether or not to output JSON data, rather than the normal output.
+13 error
+13 error
+13 error Run "npm help approve-scripts" for more info
+14 verbose cwd /data/data/com.termux/files/home
+15 verbose os Linux 4.14.186-g629cb8c46-dirty
+16 verbose node v26.2.0
+17 verbose npm  v11.16.0
+18 verbose exit 1
+19 verbose code 1
+20 error A complete log of this run can be found in: /data/data/com.termux/files/home/.npm/_logs/2026-05-30T09_05_29_856Z-debug-0.log
