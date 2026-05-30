@@ -12,6 +12,9 @@
   "type": "commonjs",
   "dependencies": {
     "@whiskeysockets/baileys": "^7.0.0-rc13",
-    "pino": "^10.3.1"
+    "lyrics-finder": "^21.7.0",
+    "pino": "^10.3.1",
+    "yt-search": "^2.13.1",
+    "ytdl-core": "^4.11.5"
   }
 }

@@ -8,15 +8,19 @@ const pino = require('pino');
 const readline = require('readline');
 const os = require('os'); 
 
+// 🔥 NEW: Required Modules for Music & Lyrics
+const yts = require('yt-search');
+const ytdl = require('ytdl-core');
+const lyricsFinder = require('lyrics-finder');
+
 const BOT_CONFIG = {
     name: "Enigma D20",
     owner: "Abhrodeep Dey",
     developer: "Rohan Sharma",
     timezone: "Asia/Kolkata",
-    version: "1.0.4" // Fixed Whitelist & Owner Bypass
+    version: "1.0.5" // Music & Lyrics Update
 };
 
-// 🔥 ADDED: Abhrodeep's Hidden WhatsApp ID (217128296820869)
 const AUTHORIZED_NUMBERS = [
     "918100601505",
     "916290371061",
@@ -79,20 +83,9 @@ async function startBot() {
             console.log(`🤖 Bot Name  : ${BOT_CONFIG.name}`);
             console.log(`👑 Owner     : ${BOT_CONFIG.owner}`);
             console.log(`💻 Developer : ${BOT_CONFIG.developer}`);
-            console.log(`🔒 Security  : Whitelist Enabled`);
+            console.log(`🎵 Features  : Music & Lyrics Loaded`);
             console.log(`======================================`);
-            console.log(`\n[STATUS] ${BOT_CONFIG.name} is online and secured!`);
-
-            setTimeout(async () => {
-                try {
-                    const targetNumber = '916290371061@s.whatsapp.net'; 
-                    const connectionMessage = "Well! Done connected to the Bot";
-                    await sock.sendMessage(targetNumber, { text: connectionMessage });
-                    console.log(`[LOG] Startup message sent to 916290371061`);
-                } catch (err) {
-                    console.error("[ERROR] Failed to send startup message:", err);
-                }
-            }, 3000);
+            console.log(`\n[STATUS] ${BOT_CONFIG.name} is online!`);
         }
     });
 
@@ -100,13 +93,11 @@ async function startBot() {
         try {
             const msg = chatUpdate.messages[0];
             
-            // 🔥 FIXED: Removed the 'fromMe' block here so the owner can test commands!
             if (!msg.message) return; 
 
             const isFromMe = msg.key.fromMe;
             const from = msg.key.remoteJid;
             
-            // Extract the sender ID properly
             let rawSender = isFromMe ? sock.user.id : (msg.key.participant || msg.key.remoteJid);
             let senderNum = rawSender.split('@')[0].split(':')[0]; 
 
@@ -124,15 +115,9 @@ async function startBot() {
             const prefix = '.';
             if (!body.startsWith(prefix)) return;
 
-            console.log(`[DEBUG] Command received from: ${senderNum} | isOwner: ${isFromMe}`);
-
-            // 🔥 SECURITY CHECK: Always allow if it's the bot's own number, otherwise check whitelist
             if (!isFromMe && !AUTHORIZED_NUMBERS.includes(senderNum)) {
-                console.log(`[SECURITY] Blocked command from unauthorized number: ${senderNum}`);
-                return; // Ignore completely
+                return; 
             }
-
-            console.log(`[SECURITY] Access Granted! Executing command...`);
 
             const args = body.slice(prefix.length).trim().split(/ +/);
             const command = args.shift().toLowerCase();
@@ -145,11 +130,9 @@ async function startBot() {
                 const totalRam = (os.totalmem() / 1024 / 1024 / 1024).toFixed(2); 
                 const freeRam = (os.freemem() / 1024 / 1024 / 1024).toFixed(2); 
                 const usedRam = (totalRam - freeRam).toFixed(2);
-
                 const now = new Date();
                 const currentDate = now.toLocaleDateString('en-IN', { timeZone: BOT_CONFIG.timezone });
                 const currentTime = now.toLocaleTimeString('en-IN', { timeZone: BOT_CONFIG.timezone });
-
                 const timestamp = msg.messageTimestamp.low || msg.messageTimestamp;
                 const botSpeed = Math.abs(Date.now() - (timestamp * 1000)); 
 
@@ -172,6 +155,8 @@ async function startBot() {
 ┃ ℹ️ *${prefix}info* - Check bot status
 ┃ 🏓 *${prefix}ping* - Check bot speed
 ┃ 👤 *${prefix}owner* - Owner details
+┃ 🎵 *${prefix}play* - Download any song
+┃ 📝 *${prefix}lyrics* - Get song lyrics
 ╰━━━━━━━━━━━━━━━━━━━━━
 `.trim();
                 
@@ -190,6 +175,64 @@ async function startBot() {
 
             else if (command === 'owner') {
                 await sock.sendMessage(from, { text: `*👑 Owner:* ${BOT_CONFIG.owner}\n*💻 Developer:* ${BOT_CONFIG.developer}` }, { quoted: msg });
+            }
+
+            // 🔥 NEW COMMAND: Song Downloader
+            else if (command === 'play') {
+                const songQuery = args.join(" ");
+                if (!songQuery) {
+                    return sock.sendMessage(from, { text: `*⚠️ Gaane ka naam likho!*\nExample: ${prefix}play raabta` }, { quoted: msg });
+                }
+
+                await sock.sendMessage(from, { text: `🎵 *${songQuery}* search kar raha hu... Wait karo.` }, { quoted: msg });
+
+                try {
+                    const search = await yts(songQuery);
+                    const video = search.videos[0]; // Gets the top result
+                    
+                    if (!video) {
+                        return sock.sendMessage(from, { text: "❌ Koi gaana nahi mila." }, { quoted: msg });
+                    }
+                    
+                    const infoText = `╭━━━〔 *🎵 SONG FOUND* 〕━━━\n┃ *Title:* ${video.title}\n┃ *Channel:* ${video.author.name}\n┃ *Duration:* ${video.timestamp}\n╰━━━━━━━━━━━━━━━━━━━━━\n\n⬇️ *Downloading audio...*`;
+                    
+                    // Send thumbnail with details
+                    await sock.sendMessage(from, { image: { url: video.thumbnail }, caption: infoText }, { quoted: msg });
+                    
+                    // Download and send the actual audio file
+                    const stream = ytdl(video.url, { filter: 'audioonly', quality: 'highestaudio' });
+                    await sock.sendMessage(from, { 
+                        audio: { stream: stream }, 
+                        mimetype: 'audio/mp4',
+                        ptt: false // Sends as an audio file, not a voice note
+                    }, { quoted: msg });
+                    
+                } catch (err) {
+                    console.error(err);
+                    await sock.sendMessage(from, { text: "❌ Download fail ho gaya. Server overload ho sakta hai." }, { quoted: msg });
+                }
+            }
+
+            // 🔥 NEW COMMAND: Lyrics Finder
+            else if (command === 'lyrics') {
+                const songQuery = args.join(" ");
+                if (!songQuery) {
+                    return sock.sendMessage(from, { text: `*⚠️ Gaane ka naam likho!*\nExample: ${prefix}lyrics darshana` }, { quoted: msg });
+                }
+
+                await sock.sendMessage(from, { text: `🔍 *${songQuery}* ke lyrics dhoondh raha hu...` }, { quoted: msg });
+
+                try {
+                    const lyrics = await lyricsFinder("", songQuery);
+                    
+                    if (!lyrics) {
+                        return sock.sendMessage(from, { text: "❌ Sorry bhai, is gaane ke lyrics nahi mile!" }, { quoted: msg });
+                    }
+
+                    await sock.sendMessage(from, { text: `*📝 Lyrics: ${songQuery}*\n\n${lyrics}` }, { quoted: msg });
+                } catch (err) {
+                    await sock.sendMessage(from, { text: "❌ Error fetching lyrics." }, { quoted: msg });
+                }
             }
 
         } catch (err) {
