@@ -1,58 +1,45 @@
+require('dotenv').config();
 const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys');
 const pino = require('pino');
-const os = require('os');
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
 
-// Handlers import
+// 👇 YAHAN APNA NUMBER SET HAI (Jisko link karna hai)
+const PAIRING_NUMBER = "916290371061"; 
+// 👇 YAHAN SESSION ID AAYEGA
+const DEVELOPER_NUMBER = "916290371061";
+
+// --- AUTO CLEANER ---
+if (!process.env.SESSION_ID && !fs.existsSync('./auth_info/creds.json')) {
+    try { fs.rmSync('./auth_info', { recursive: true, force: true }); } catch(e) {}
+}
+
+// --- SESSION ID LOAD LOGIC ---
+if (process.env.SESSION_ID && !fs.existsSync('auth_info')) {
+    console.log("🔄 Loading Session from .env...");
+    try {
+        const sessionData = JSON.parse(Buffer.from(process.env.SESSION_ID, 'base64').toString('utf-8'));
+        fs.mkdirSync('auth_info', { recursive: true });
+        for (const file in sessionData) {
+            fs.writeFileSync(path.join('auth_info', file), sessionData[file]);
+        }
+    } catch(e) { console.log("Session Load Error", e); }
+}
+
 const { handlePlay, handleLyrics } = require('./src/download');
 const { handleTtt, handleMove } = require('./src/game');
 const { handleOwnerCommands } = require('./src/owner');
 
-// Global Settings
-global.settings = {
-    autoread: false,
-    autoreadstatus: false,
-    autoreactstatus: false,
-    autotyping: false
-};
-
-const BOT_CONFIG = { 
-    name: "Enigma D20", 
-    owner: "Abhrodeep Dey", 
-    developer: "Rohan Sharma",
-    timezone: "Asia/Kolkata",
-    version: "1.3.1"
-};
-
-const AUTHORIZED_NUMBERS = ["918100601505", "916290371061", "918282853822", "217128296820869"];
-
-// ✅ YAHAN VV AUR UPDATE ADD HO CHUKA HAI
+global.settings = { autoread: false, autoreadstatus: false, autoreactstatus: false, autotyping: false };
+const BOT_CONFIG = { name: "Enigma D20", owner: "Abhrodeep Dey", developer: "Rohan Sharma" };
+const AUTHORIZED_NUMBERS = ["918100601505", "916290371061", "918282853822", "217128296820869", "919339777647"];
 const ownerCommandsList = ['autoread', 'autoreadstatus', 'autoreactstatus', 'autotyping', 'deletechat', 'del', 'deletefullchat', 'clear', 'vv', 'update'];
 
-// --- PAIRING SERVER (PORT 3000) ---
 const app = express();
-app.use(express.static('public'));
-app.use(express.json());
+app.get('/', (req, res) => res.send('Enigma D20 is running!'));
+app.listen(3000, () => console.log('\n[SERVER] Keep-alive server running on port 3000'));
 
-let globalSock;
-
-app.get('/pair', async (req, res) => {
-    let phone = req.query.phone;
-    if (!phone) return res.json({ error: "Phone number is required" });
-    try {
-        let code = await globalSock.requestPairingCode(phone);
-        code = code?.match(/.{1,4}/g)?.join('-') || code;
-        res.json({ code: code });
-    } catch (err) {
-        res.json({ error: "Failed to generate code. Please try again." });
-    }
-});
-
-app.listen(3000, () => {
-    console.log('\n[SERVER] Pairing website is online on port 3000');
-});
-
-// --- MAIN BOT FUNCTION ---
 async function startBot() {
     const { state, saveCreds } = await useMultiFileAuthState('auth_info');
     const { version } = await fetchLatestBaileysVersion();
@@ -62,29 +49,57 @@ async function startBot() {
         logger: pino({ level: 'silent' }), 
         printQRInTerminal: false,
         auth: state,
-        browser: ["Ubuntu", "Chrome", "20.0.04"]
+        browser: ["Ubuntu", "Chrome", "111.0.0"] // Browser version updated for safety
     });
-    
-    globalSock = sock; // Pass sock to express app
-
-    if (!sock.authState.creds.registered) {
-        console.log(`\n--- Enigma D20 Authentication ---`);
-        console.log(`⚠️ Bot is not linked! Please visit your localhost:3000 to generate the Pairing Code.`);
-    }
 
     sock.ev.on('creds.update', saveCreds);
 
+    let pairingCodeRequested = false; // Isse code baar-baar generate nahi hoga
+
     sock.ev.on('connection.update', async (update) => {
-        const { connection, lastDisconnect } = update;
+        const { connection, lastDisconnect, qr } = update;
+        
+        // 🔥 THE ULTIMATE FIX: Jab server 100% ready hoga (qr aayega), tabhi code mangenge! No Timer!
+        if (qr && !sock.authState.creds.registered && !pairingCodeRequested) {
+            pairingCodeRequested = true;
+            console.log(`\n=========================================`);
+            console.log(`⏳ Server Connected! Fetching pairing code for: ${PAIRING_NUMBER}...`);
+            
+            try {
+                let code = await sock.requestPairingCode(PAIRING_NUMBER);
+                code = code?.match(/.{1,4}/g)?.join('-') || code;
+                console.log(`✅ YOUR PAIRING CODE IS: ${code}`);
+                console.log(`👉 Link a device > Link with phone number instead > Enter this code!`);
+                console.log(`=========================================\n`);
+            } catch (err) {
+                console.log("❌ Error fetching code:", err.message);
+                console.log("⚠️ Agar fail hua, toh bot ko band karke wapas start karein.");
+            }
+        }
+
         if (connection === 'close') {
             const shouldReconnect = lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut;
-            if (shouldReconnect && sock.authState.creds.registered) {
-                startBot();
-            } else if (!sock.authState.creds.registered) {
-                console.log("[WAITING] Please link via the website...");
-            }
+            if (shouldReconnect) startBot();
         } else if (connection === 'open') {
             console.log(`\n[STATUS] Enigma D20 is online and fully loaded!`);
+            
+            if (!process.env.SESSION_ID) {
+                setTimeout(async () => {
+                    try {
+                        const files = fs.readdirSync('auth_info');
+                        const sessionData = {};
+                        files.forEach(file => {
+                            sessionData[file] = fs.readFileSync(path.join('auth_info', file), 'utf-8');
+                        });
+                        const sessionString = Buffer.from(JSON.stringify(sessionData)).toString('base64');
+                        
+                        await sock.sendMessage(`${DEVELOPER_NUMBER}@s.whatsapp.net`, { 
+                            text: `🔑 *YOUR SESSION ID:*\n\n${sessionString}\n\n⚠️ Isko Katabump par .env file mein 'SESSION_ID=' ke aage paste karna.` 
+                        });
+                        console.log("✅ Session ID aapke developer number par bhej diya gaya hai!");
+                    } catch (err) { console.error("Session generation failed:", err); }
+                }, 5000);
+            }
         }
     });
 
@@ -95,7 +110,6 @@ async function startBot() {
             const from = msg.key.remoteJid;
             const isFromMe = msg.key.fromMe;
             const senderNum = (isFromMe ? sock.user.id : (msg.key.participant || msg.key.remoteJid)).split('@')[0].split(':')[0];
-            
             const body = msg.message.conversation || msg.message.extendedTextMessage?.text || msg.message.imageMessage?.caption || msg.message.videoMessage?.caption || '';
             const isOwner = isFromMe || AUTHORIZED_NUMBERS.includes(senderNum);
 
@@ -114,38 +128,8 @@ async function startBot() {
             const args = body.slice(1).trim().split(/ +/);
             const command = args.shift().toLowerCase();
 
-            // ✅ YAHAN MENU MEIN VV AUR UPDATE LIKHA HUA HAI
             if (command === 'menu') {
-                const menuText = `╭━━━〔 *${BOT_CONFIG.name}* 〕━━━
-┃ 👑 *Owner:* ${BOT_CONFIG.owner}
-┃ 💻 *Developer:* ${BOT_CONFIG.developer}
-╰━━━━━━━━━━━━━━━━━━━━━
-
-╭───〔 💡 MAIN MENU 〕───
-| ℹ️ .info - Check bot status
-| 🏓 .ping - Check bot speed
-╰━━━━━━━━━━━━━━━━━━━━━
-
-╭───〔 🎧 DOWNLOAD MENU 〕───
-| 🎵 .play - Download song
-| 📝 .lyrics - Get lyrics
-╰━━━━━━━━━━━━━━━━━━━━━
-
-╭───〔 🕹️ GAME MENU 〕───
-| 🎮 .ttt @tag - Tic-Tac-Toe
-| 🕹️ .move 1-9 - Game move
-╰━━━━━━━━━━━━━━━━━━━━━
-
-╭───〔 👑 OWNER MENU 〕───
-| 👁️ .autoread - Auto-Read msgs
-| 🖼️ .autoreadstatus - Auto-view status
-| 🔥 .autoreactstatus - Auto-react status
-| ⌨️ .autotyping - Auto-typing indicator
-| 🗑️ .del - Delete quoted msg
-| 🧹 .clear - Clear chat memory
-| 🔓 .vv - Bypass View Once
-| 🔄 .update - Auto Update Bot
-╰━━━━━━━━━━━━━━━━━━━━━`.trim();
+                const menuText = `╭━━━〔 *${BOT_CONFIG.name}* 〕━━━\n┃ 👑 *Owner:* ${BOT_CONFIG.owner}\n┃ 💻 *Developer:* ${BOT_CONFIG.developer}\n╰━━━━━━━━━━━━━━━━━━━━━\n\n╭───〔 💡 MAIN MENU 〕───\n| ℹ️ .info - Check status\n| 🏓 .ping - Check speed\n╰━━━━━━━━━━━━━━━━━━━━━\n\n╭───〔 🎧 DOWNLOAD MENU 〕───\n| 🎵 .play - Download song\n| 📝 .lyrics - Get lyrics\n╰━━━━━━━━━━━━━━━━━━━━━\n\n╭───〔 🕹️ GAME MENU 〕───\n| 🎮 .ttt @tag - Tic-Tac-Toe\n| 🕹️ .move 1-9 - Game move\n╰━━━━━━━━━━━━━━━━━━━━━\n\n╭───〔 👑 OWNER MENU 〕───\n| 👁️ .autoread - Auto-Read msgs\n| 🖼️ .autoreadstatus - Auto-view status\n| 🔥 .autoreactstatus - Auto-react status\n| ⌨️ .autotyping - Auto-typing\n| 🗑️ .del - Delete msg\n| 🧹 .clear - Clear chat\n| 🔓 .vv - Bypass View Once\n| 🔄 .update - Auto Update Bot\n╰━━━━━━━━━━━━━━━━━━━━━`.trim();
                 await sock.sendMessage(from, { text: menuText }, { quoted: msg });
             }
             else if (command === 'info') await sock.sendMessage(from, { text: `*Enigma D20 is fully operational.*` }, { quoted: msg });
